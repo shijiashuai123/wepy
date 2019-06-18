@@ -1,0 +1,173 @@
+<style lang="less">
+    .homePage {
+        width: 100%;
+        height: 100vh;
+        background: url(http://laoha.uijwuy.xyz:8088/SMSPlatform/images/bj.png) no-repeat;
+        background-size: 100%;
+        .homeBox {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            background: #e0ebf4;
+            opacity: 0.9;
+            .logo {
+                text-align: center;
+                padding-top: 15%;
+                >image {
+                    width: 200rpx;
+                    height: 255rpx;
+                }
+            }
+            .loginPar {
+                width: 80%;
+                margin: 15% auto 0;
+                border-radius: 16rpx;
+                .loginBd {
+                    width: 100%;
+                    height: 80rpx;
+                    line-height: 80rpx;
+                    border: 1rpx solid #c1c1c1;
+                    display: flex;
+                    justify-content: flex-start;
+                    background-color: #fff;
+                    font-size: 34rpx;
+                    color: #333;
+                    &:nth-child(1) {
+                        border-radius: 16rpx 16rpx 0rpx 0rpx;
+                        border-bottom: none;
+                    }
+                    &:nth-child(2) {
+                        border-radius: 0rpx 0rpx 16rpx 16rpx;
+                    }
+                }
+                .usernameTit {
+                    width: 26%;
+                    text-align: center;
+                }
+                .username {
+                    width: 74%;
+                    height: 80rpx;
+                    font-size: 26rpx;
+                    background-color: #F5F5F5;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    border-radius: 16rpx;
+                    padding-left: 10rpx;
+                    font-size: 35rpx;
+                }
+            }
+            .submitBox {
+                width: 80%;
+                margin: 20% auto 0;
+                .loginBtn {
+                    width: 100%;
+                    height: 80rpx;
+                    line-height: 80rpx;
+                    box-shadow: #8f9bad 0px 0px 20px;
+                    text-align: center;
+                    background: #fff;
+                    color: #374782;
+                    border-radius: 10rpx;
+                    opacity: 1;
+                }
+            }
+        }
+    }
+</style>
+<template>
+  <view class="homePage">
+    <view class="homeBox">
+        <view class="logo">
+            <image src="{{ logoImg }}"/>
+        </view>
+        <view class="loginPar">
+            <view class="loginBd">
+                <text class="usernameTit">用户名：</text>
+                <input @input="getusername" class='username' value="{{loginObj.username}}" placeholder="请输入用户名" />
+            </view>
+            <view class="loginBd">
+                <text class="usernameTit">密　码：</text>
+                <input @input="getpassword" class='username' value="{{loginObj.password}}" password="true" placeholder="请输入密码" />
+            </view>
+        </view>
+        <view class="submitBox">
+            <view @tap="loginFun" class="loginBtn">登  录</view>
+        </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import {login} from './api/login.js'
+  const { $Toast } = require('../iview/base/index');
+  export default class Group extends wepy.component {
+    props = {
+      index: {}
+    }
+    data = {
+		logoImg: 'http://laoha.uijwuy.xyz:8088/SMSPlatform/images/logo.png',
+		loginObj: {
+			username: '',
+        	password: ''
+		}
+    }
+    components = {
+    }
+    methods = {
+		getusername(e) {
+			console.log(e)
+			console.log(e.detail.value.trim())
+			this.loginObj.username = e.detail.value.trim()
+		},
+		getpassword(e) {
+			this.loginObj.password = e.detail.value.trim()
+		},
+      	loginFun () {
+		  console.log(this.loginObj)
+			if (!this.loginObj.username) {
+				$Toast({
+					content: '用户名为空',
+					type: 'error'
+				});
+				return
+			}
+			if (!this.loginObj.password) {
+				$Toast({
+					content: '密码为空',
+					type: 'error'
+				});
+				return
+			}
+			if (this.loginObj.username && this.loginObj.password) {
+				console.log("开始登陆")
+				login(this.loginObj).then(res => {
+					console.log(res)
+					if (res.data == 'success') {
+						$Toast({
+							content: '登录成功',
+							type: 'success'
+						});
+						wx.setStorageSync('token', 'token')
+						wx.redirectTo({
+							url: '/pages/home'
+						})
+					} else {
+						$Toast({
+							content: '登录失败',
+							type: 'error'
+						});
+					}
+				})
+				this.loginObj.username = ''
+				this.loginObj.password = ''
+			} else {
+				console.log("请输入用户名密码")
+				$Toast({
+					content: '请输入信息',
+					type: 'error'
+				});
+			}
+		}
+    }
+  }
+</script>
