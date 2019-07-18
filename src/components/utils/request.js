@@ -1,5 +1,5 @@
-let url = 'http://101.132.141.83:8088';
-function fetch(o) {
+let url = 'http://101.132.141.83';
+function request(o) {
   return new Promise((res, rej) => {
     var p = {
       url: '',
@@ -12,7 +12,12 @@ function fetch(o) {
       }
     };
     p.header =
-      'header' in o ? o.header : { 'content-type': 'application/json' };
+      'header' in o
+        ? o.header
+        : {
+            'content-type': 'application/json',
+            Cookie: 'JSESSIONID=25174966D4D6B03D595184E75190896A'
+          };
     'data' in o ? (p.data = o.data) : '';
     'method' in o ? (p.method = o.method) : (p.method = 'get');
     o.url.substr(0, 4) == 'http' ? (p.url = o.url) : (p.url = url + o.url);
@@ -30,4 +35,4 @@ function fetch(o) {
     wx.request(p);
   });
 }
-export default fetch;
+export default request;

@@ -1,0 +1,171 @@
+<template>
+    <view class="listBox">
+        <repeat for="{{smsList}}" key="index" index="index" item="item">
+           <view class='resItemBox'>
+                <view style='display: flex; align-items: center; height: 100%;'>
+                    <text class='curResIndex'>{{index+1}}</text>
+                    <view style="width: 100%; height: 180rpx; line-height: 45rpx; display: flex; justify-content: space-arount; align-items: center;">
+                        <view class='mainContent'>
+                            <view class='resName'>{{item.userId}}</view>
+                            <view class='resCont'>{{item.smsContent}}</view>
+                        </view>
+                        <view style="width: 240rpx; color:rgba(42,182,40,1); font-size: 28rpx;" wx:if="{{ item.sendStatus == 0 }}" >已完成</view>
+                        <view style="width: 240rpx; color: #FC3D3D;" wx:else >已完成</view>
+                    </view>
+                </view>
+                <view style='width: 100%; text-align: right;'>
+                    <view class='createTime'>{{item.sendTime}}</view>
+                </view>
+            </view>
+        </repeat>
+        <i-toast id="toast" />
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import * as resource from '../../components/api/resource.js'
+const { $Toast } = require('../../iview/base/index');
+
+export default class getListAll extends wepy.component {
+    props = {
+        judges: String
+    }
+    watch = {
+      judges (curVal, oldVal) {
+        console.log(`旧值：${oldVal}，新值：${curVal}`)
+        this.getSmsList()
+      }
+    }
+    data = {
+        smsList: [],
+    }
+ 
+    components = {
+    }
+    // attached = {
+
+    // }
+    methods = {
+    }
+    getSmsList() {
+        if (!this.judges) {
+            return
+        }
+        $Toast({
+            content: '加载中',
+            type: 'loading',
+            duration: 0
+        });
+        if (this.judges == 'true') {
+            console.log('开始获取')
+            resource.getSMSList().then( res => {
+                console.log(res)
+                $Toast.hide()
+                if (res.statusCode == 200) { 
+
+                    this.smsList = res.data
+                    this.$apply()
+                } else {
+                    $Toast({
+                        content: '网络错误',
+                        type: 'error'
+                    });
+                }
+                console.log(this.smsList)
+            })
+        } else {
+            resource.getsinglelist(this.judges).then( res => {
+                console.log(res)
+                $Toast.hide()
+                
+                if (res.statusCode == 200) {
+                    this.smsList = res.data
+                    this.$apply()
+                } else {
+                    $Toast({
+                        content: '网络错误',
+                        type: 'error'
+                    });
+                }
+            })
+        }
+    }
+    onLoad() {
+        console.log('傻逼', this.judges)
+    }
+    
+}
+</script>
+
+<style lang="less">
+    .listBox {
+        width: 100%;
+        background-color: rgba(245,245,245,1);
+        .resItemBox {
+            width: 95%;
+            // height: 200rpx;
+            border-radius: 12rpx;
+            background-color: #fff;
+            margin: 20rpx auto 0rpx;
+            // display: flex;
+            // justify-content: space-between;
+            // align-items: flex-end;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            }
+            .resItemBox:last-of-type {
+            margin: 20rpx auto;
+            }
+            .curResIndex {
+            font-size: 40rpx;
+            width: 48rpx;
+            text-align: center;
+            margin: 0rpx 25rpx 0rpx 25rpx;
+            color: rgba(147,147,147,1);
+            }
+            .mainContent {
+            // height: 100%;
+            // width: 335rpx;
+            overflow: hidden;
+            }
+            .resName {
+            font-size: 32rpx;
+            color: rgba(51,51,51,1);
+            // margin: 54rpx auto 18rpx;
+            // overflow:hidden;
+            // text-overflow:ellipsis;
+            // white-space:nowrap;
+            }
+            .resCont {
+            font-size: 24rpx;
+            width: 100%;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
+            color: rgba(165,165,165,1);
+            }
+            .play {
+            position: relative;
+            width: 120rpx;
+            height: 120rpx;
+            
+            }
+            .playBg {
+            position: absolute;
+            top: 0rpx;
+            left: 0rpx;
+            z-index: 1;
+            }
+            image {
+            width: 100%;
+            height: 100%;
+            }
+            .createTime {
+            font-size: 28rpx;
+            color: #aaa;
+            margin-bottom: 6rpx;
+            }
+    }
+</style>

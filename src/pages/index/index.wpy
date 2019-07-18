@@ -19,14 +19,14 @@
 <script>
   import wepy from 'wepy'
   import { connect } from 'wepy-redux'
-  import Panel from '@/components/panel' // alias example
+  // import Panel from '@/components/panel' // alias example
   import Counter from 'counter' // alias example
-  import List from '../components/list' // aliasFields example
+  // import List from '../components/list' // aliasFields example
   import moduleA from 'module-a' // aliasFields ignore module example
-  import Group from '../components/group'
-  import Home from '../components/index'
+  // import Group from '../components/group'
+  import Home from '../../components/login/index'
   import Toast from 'wepy-com-toast'
-  import testMixin from '../mixins/test'
+  import testMixin from '../../mixins/test'
 
   console.log('moduleA ignored: ', moduleA) // => moduleA ignored: {}
 
@@ -46,15 +46,15 @@
     config = {
       navigationBarTitleText: '登录页面',
       usingComponents: {
-        "i-toast": "../iview/toast/index",
+        "i-toast": "../../iview/toast/index",
       }
     }
     components = {
-      panel: Panel,
-      counter1: Counter,
-      counter2: Counter,
-      list: List,
-      group: Group,
+      // panel: Panel,
+      // counter1: Counter,
+      // counter2: Counter,
+      // list: List,
+      // group: Group,
       toast: Toast,
       home: Home
     }

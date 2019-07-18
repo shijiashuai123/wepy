@@ -1,0 +1,141 @@
+<template>
+    <view>
+        <view class='temBox'>
+        <view class='searchBox'>
+            <view class='phoneTit'>
+            <image class='searchIcon' src='../img/search.png' />
+            <input class='searchInput' type="number" value="{{value5}}" bindinput="getValue" placeholder="请输入手机号" auto-focus bindconfirm="startSearch" confirm-type="search"/>
+            {{value5}}
+            </view>
+        </view>
+        <view wx:if="{{!value5}}" class='exitSearch' bindtap='cancelBtn'>取消</view>
+        <view wx:else class='exitSearch' bindtap='startSearch'>搜索</view>
+        </view>
+        <view>
+            <smsList :judges.sync="judge"></smsList>
+        </view>
+        <i-toast id="toast" />
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import smsList from '../../components/getList/index'
+import homePage from '../../components/index/index'
+const { $Toast } = require('../../iview/base/index');
+
+export default class getList extends wepy.page {
+    props = {
+    }
+    data = {
+        smsList: [],
+        judge: '',
+        value5: '',
+        resComtList: [],
+        noResource: false,
+    }
+    config = {
+      navigationBarTitleText: '搜索',
+      usingComponents: {
+        "i-toast": "../../iview/toast/index",
+      }
+    }
+    methods= {
+    }
+    startSearch() {
+        if (!this.value5.trim()) {
+            return
+        }
+        var TEL_REGEXP = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/
+        if(!TEL_REGEXP.test(this.value5.trim())){
+            console.log('错误')
+            $Toast({
+                content: '输入正确手机号',
+                type: 'warning'
+            });
+            return
+        }
+        if (this.value5) {
+            this.judge = this.value5
+            this.$apply()
+            this.value5 = ''
+        }
+    }
+    getValue(e) {
+        console.log(e.detail.value)
+        this.value5 = e.detail.value
+    }
+    cancelBtn() {
+        wx.navigateBack()
+    }
+    components = {
+        smsList: smsList
+    }
+    // attached = {
+
+    // }
+    onLoad(options) {
+        if (Object.keys(options).length) {
+         
+        }
+    }
+}
+</script>
+
+<style lang="less">
+    /* pages/search/index.wxss */
+.temBox {
+  width: 100%;
+  height: 110rpx;
+  background: #fff;
+  border-top: 1rpx solid transparent;
+  position: relative;
+}
+.searchBox {
+  width: 80%;
+  height: 70rpx;
+  margin: 20rpx 0rpx 0rpx 5%;
+}
+.phoneTit {
+  width: 100%;
+  height: 70rpx;
+  border: 2rpx solid #ccc;
+  /* border-bottom: 2rpx solid #ccc; */
+  /* box-shadow: 0rpx 0rpx 5rpx #ccc; */
+  padding-left: 80rpx;
+  background-color: #F5F5F5;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 10rpx;
+  position: relative;
+}
+.searchIcon {
+  width: 40rpx;
+  height: 40rpx;
+  position: absolute;
+  left: 20rpx;
+  top: 15rpx;
+}
+.searchInput {
+  height: 66rpx;
+  /* line-height: 70rpx; */
+  font-size: 26rpx;
+  background-color: #F5F5F5;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.exitSearch {
+  position: absolute;
+  right: 20rpx;
+  top: 32rpx;
+  font-size: 35rpx;
+  color: #8AD5A4;
+}
+.noResBox {
+  font-size: 30rpx;
+  color: #333;
+  margin-top: 40rpx;
+  text-align: center;
+  width: 100%;
+}
+</style>

@@ -6,6 +6,11 @@
   align-items: center;
   justify-content: space-between;
   box-sizing: border-box;
+  /* background: #f9f9f9; */
+  background-color: rgba(245,245,245,1);
+}
+page {
+  background-color: rgba(245,245,245,1);
 }
 </style>
 
@@ -22,8 +27,11 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index',
-      'pages/home'
+      'pages/index/index',
+      'pages/home/index',
+      'pages/getList/index',
+      'pages/search/index',
+      'pages/sendSms/index',
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -55,9 +63,10 @@ export default class extends wepy.app {
   }
 
   async testAsync () {
+    console.log(wx.getStorageSync('token'))
     if (wx.getStorageSync('token')) {
       wx.redirectTo({
-        url: '/pages/home'
+        url: '/pages/home/index'
       })
     }
     const data = await this.sleep(3)

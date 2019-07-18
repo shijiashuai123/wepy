@@ -1,0 +1,58 @@
+<template>
+    <view>
+        <smsList :judges.sync="judge"></smsList>
+        <i-toast id="toast" />
+    </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import smsList from '../../components/getList/index'
+import homePage from '../../components/index/index'
+const { $Toast } = require('../../iview/base/index');
+
+export default class getList extends wepy.page {
+    props = {
+    }
+    data = {
+        smsList: [],
+        judge: ''
+    }
+    config = {
+      navigationBarTitleText: '短信列表',
+      usingComponents: {
+        "i-toast": "../../iview/toast/index",
+      }
+    }
+    components = {
+        smsList: smsList
+    }
+    // attached = {
+
+    // }
+    onLoad(options) {
+        console.log(options.judge)
+        this.judge = options.judge
+        this.$apply()
+        console.log('第一个', this.judge)
+    }
+    onReachBottom() {
+        console.log('到底了')
+        $Toast({
+            content: '加载中',
+            type: 'loading',
+            duration: 500
+        });
+        setTimeout(() => {
+            $Toast({
+                content: '暂无更多',
+                type: 'warning'
+            });
+        }, 500)
+    }
+}
+</script>
+
+<style lang="less">
+  
+</style>
